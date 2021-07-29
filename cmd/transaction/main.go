@@ -9,11 +9,11 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/Pallinder/go-randomdata"
 	"cloud.google.com/go/firestore"
+	"github.com/Pallinder/go-randomdata"
 	"github.com/ThreeDotsLabs/watermill"
+	watermillFirestore "github.com/ThreeDotsLabs/watermill-firestore/pkg/firestore"
 	"github.com/ThreeDotsLabs/watermill/message"
-	watermillFirestore "github.com/czeslavo/watermill-firestore/pkg/firestore"
 )
 
 const projectID = "test"
@@ -135,4 +135,3 @@ func monitorQueueLength(sub *watermillFirestore.Subscriber, topic string, logger
 		<-time.After(time.Second)
 	}
 }
-

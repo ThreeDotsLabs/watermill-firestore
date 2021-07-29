@@ -8,8 +8,8 @@ import (
 	"strings"
 
 	"cloud.google.com/go/firestore"
+	"github.com/ThreeDotsLabs/watermill-firestore/internal/inspector"
 	"github.com/ThreeDotsLabs/watermill/message"
-	"github.com/czeslavo/watermill-firestore/internal/inspector"
 	"github.com/urfave/cli/v2"
 )
 

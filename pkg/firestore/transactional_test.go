@@ -6,12 +6,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
-
 	stdFirestore "cloud.google.com/go/firestore"
 	"github.com/ThreeDotsLabs/watermill"
+	"github.com/ThreeDotsLabs/watermill-firestore/pkg/firestore"
 	"github.com/ThreeDotsLabs/watermill/message"
-	"github.com/czeslavo/watermill-firestore/pkg/firestore"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 

@@ -5,12 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
 	"cloud.google.com/go/firestore"
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/pkg/errors"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 type Client struct {

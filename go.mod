@@ -1,4 +1,4 @@
-module github.com/czeslavo/watermill-firestore
+module github.com/ThreeDotsLabs/watermill-firestore
 
 go 1.12
 

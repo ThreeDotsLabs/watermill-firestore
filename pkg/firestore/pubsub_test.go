@@ -7,10 +7,9 @@ import (
 	"time"
 
 	"github.com/ThreeDotsLabs/watermill"
+	"github.com/ThreeDotsLabs/watermill-firestore/pkg/firestore"
 	"github.com/ThreeDotsLabs/watermill/message"
 	"github.com/ThreeDotsLabs/watermill/pubsub/tests"
-
-	"github.com/czeslavo/watermill-firestore/pkg/firestore"
 )
 
 func createPubSub(t *testing.T) (message.Publisher, message.Subscriber) {

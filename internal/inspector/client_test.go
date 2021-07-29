@@ -9,9 +9,9 @@ import (
 
 	"cloud.google.com/go/firestore"
 	"github.com/ThreeDotsLabs/watermill"
+	"github.com/ThreeDotsLabs/watermill-firestore/internal/inspector"
+	watermillFirestore "github.com/ThreeDotsLabs/watermill-firestore/pkg/firestore"
 	"github.com/ThreeDotsLabs/watermill/message"
-	"github.com/czeslavo/watermill-firestore/internal/inspector"
-	watermillFirestore "github.com/czeslavo/watermill-firestore/pkg/firestore"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
