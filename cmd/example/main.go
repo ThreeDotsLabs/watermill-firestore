@@ -66,14 +66,11 @@ func publish(p *firestore.Publisher) {
 }
 
 func read(output <-chan *message.Message) {
-	for {
-		select {
-		case msg := <-output:
-			if msg == nil {
-				return
-			}
-			<-time.After(time.Second)
-			msg.Ack()
+	for msg := range output {
+		if msg == nil {
+			return
 		}
+		<-time.After(time.Second)
+		msg.Ack()
 	}
 }

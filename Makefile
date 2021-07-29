@@ -1,3 +1,13 @@
+ci: tools lint
+
+tools:
+	 go install honnef.co/go/tools/cmd/staticcheck@latest
+	 go install golang.org/x/tools/cmd/goimports@latest
+
+lint: 
+	go vet ./...
+	staticcheck ./...
+
 up:
 	docker-compose up
 
@@ -29,3 +39,5 @@ update_watermill:
 
 	sed -i '\|go 1\.|d' go.mod
 	go mod edit -fmt
+
+.PHONY: ci tools lint up test test_v test_short test_race test_stress bench fmt update_watermill

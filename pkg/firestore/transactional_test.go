@@ -28,6 +28,8 @@ func TestTransactionalPublisher(t *testing.T) {
 	subscriber, err := firestore.NewSubscriber(firestore.SubscriberConfig{
 		ProjectID: projectID,
 	}, logger)
+	require.NoError(t, err)
+
 	msgs, err := subscriber.Subscribe(ctx, topic)
 	require.NoError(t, err)
 
