@@ -47,7 +47,7 @@ type SubscriberConfig struct {
 	Marshaler Marshaler
 
 	// CustomFirestoreClient can be used to override a default client.
-	CustomFirestoreClient *firestore.Client
+	CustomFirestoreClient client
 }
 
 func (c *SubscriberConfig) setDefaults() {
@@ -75,7 +75,7 @@ type Subscriber struct {
 	config SubscriberConfig
 	logger watermill.LoggerAdapter
 
-	client *firestore.Client
+	client client
 
 	closed                       bool
 	closing                      chan struct{}
@@ -87,7 +87,7 @@ type Subscriber struct {
 func NewSubscriber(config SubscriberConfig, logger watermill.LoggerAdapter) (*Subscriber, error) {
 	config.setDefaults()
 
-	var client *firestore.Client
+	var client client
 	if config.CustomFirestoreClient != nil {
 		client = config.CustomFirestoreClient
 	} else {
@@ -195,7 +195,7 @@ func (s *Subscriber) SubscribeInitialize(topic string) error {
 	return createFirestoreSubscriptionIfNotExists(s.client, s.config.PubSubRootCollection, topic, s.config.GenerateSubscriptionName(topic), s.logger, s.config.Timeout)
 }
 
-func createFirestoreSubscriptionIfNotExists(client *firestore.Client, rootCollection, topic, subscription string, logger watermill.LoggerAdapter, timeout time.Duration) error {
+func createFirestoreSubscriptionIfNotExists(client client, rootCollection, topic, subscription string, logger watermill.LoggerAdapter, timeout time.Duration) error {
 	logger = logger.With(watermill.LogFields{"topic": topic})
 
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)

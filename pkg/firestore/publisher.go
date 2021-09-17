@@ -47,7 +47,7 @@ type PublisherConfig struct {
 	Marshaler Marshaler
 
 	// CustomFirestoreClient can be used to override a default client.
-	CustomFirestoreClient *firestore.Client
+	CustomFirestoreClient client
 }
 
 func (c *PublisherConfig) setDefaults() {
@@ -69,7 +69,7 @@ type Publisher struct {
 	config PublisherConfig
 	logger watermill.LoggerAdapter
 
-	client *firestore.Client
+	client client
 
 	subscriptionsCacheMtx *sync.RWMutex
 	subscriptionsCache    map[string]subscriptionsCacheEntry
@@ -83,7 +83,7 @@ type subscriptionsCacheEntry struct {
 func NewPublisher(config PublisherConfig, logger watermill.LoggerAdapter) (*Publisher, error) {
 	config.setDefaults()
 
-	var client *firestore.Client
+	var client client
 	if config.CustomFirestoreClient != nil {
 		client = config.CustomFirestoreClient
 	} else {
