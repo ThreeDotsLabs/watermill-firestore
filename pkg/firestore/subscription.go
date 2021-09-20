@@ -17,14 +17,14 @@ type subscription struct {
 	topic  string
 	config SubscriberConfig
 
-	client *firestore.Client
+	client client
 	logger watermill.LoggerAdapter
 
 	closing chan struct{}
 	output  chan *message.Message
 }
 
-func newSubscription(name, topic string, config SubscriberConfig, client *firestore.Client, logger watermill.LoggerAdapter, closing chan struct{}) (*subscription, error) {
+func newSubscription(name, topic string, config SubscriberConfig, client client, logger watermill.LoggerAdapter, closing chan struct{}) (*subscription, error) {
 	s := &subscription{
 		name:    name,
 		topic:   topic,
