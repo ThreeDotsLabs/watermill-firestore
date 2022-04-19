@@ -17,7 +17,7 @@ import (
 const (
 	defaultPubSubRootCollection = "pubsub"
 	defaultTimeout              = time.Second * 30
-	defaultReadAllPeriod        = time.Second * 30
+	defaultReadAllPeriod        = time.Second * 10
 
 	subscriptionsCollection = "subscriptions"
 )
