@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  FIRESTORE_EMULATOR_HOST: localhost:8081
+  FIRESTORE_PROJECT_ID: test
+
 jobs:
 
   build:
@@ -21,6 +25,11 @@ jobs:
 
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
+
+      - name: Run Firestore emulator
+        uses: mickfeech/firestore-emulator-action@0.0.12
+        with:
+          fireStoreProjectID: test
 
       - name: Run tests
         run: make ci
