@@ -51,17 +51,14 @@ func newSubscription(
 }
 
 func (s *subscription) receive(ctx context.Context) {
-	// Read all messages from the subscription that are not yet acknowledged.
-	s.readAll(ctx)
+	s.readPendingMessages(ctx)
 
 	g, ctx := errgroup.WithContext(ctx)
 	g.Go(func() error {
-		// Read all messages from the subscription periodically in case any message is skip in changes stream.
-		return s.readAllPeriodically(ctx)
+		return s.readPendingMessagesPeriodically(ctx)
 	})
 	g.Go(func() error {
-		// Watch incoming messages in form of changes to the subscription collection.
-		return s.watchChanges(ctx)
+		return s.watchIncomingMessages(ctx)
 	})
 
 	if err := g.Wait(); err != nil {
@@ -69,20 +66,20 @@ func (s *subscription) receive(ctx context.Context) {
 	}
 }
 
-func (s *subscription) readAllPeriodically(ctx context.Context) error {
+func (s *subscription) readPendingMessagesPeriodically(ctx context.Context) error {
 	ticker := time.NewTicker(s.config.ReadAllPeriod)
 
 	for {
 		select {
 		case <-ticker.C:
-			s.readAll(ctx)
+			s.readPendingMessages(ctx)
 		case <-ctx.Done():
 			return ctx.Err()
 		}
 	}
 }
 
-func (s *subscription) readAll(ctx context.Context) {
+func (s *subscription) readPendingMessages(ctx context.Context) {
 	docs, err := s.messagesQuery().Documents(ctx).GetAll()
 	if err != nil {
 		s.logger.Error("Couldn't read all messages from subscription", err, nil)
@@ -93,7 +90,7 @@ func (s *subscription) readAll(ctx context.Context) {
 	}
 }
 
-func (s *subscription) watchChanges(ctx context.Context) error {
+func (s *subscription) watchIncomingMessages(ctx context.Context) error {
 	subscriptionSnapshots := s.messagesQuery().Query.Snapshots(ctx)
 	defer subscriptionSnapshots.Stop()
 	for {
