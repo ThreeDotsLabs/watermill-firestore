@@ -2,8 +2,10 @@ package firestore
 
 import (
 	"context"
+	"time"
 
 	"cloud.google.com/go/firestore"
+	"golang.org/x/sync/errgroup"
 	"google.golang.org/api/iterator"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -24,7 +26,13 @@ type subscription struct {
 	output  chan *message.Message
 }
 
-func newSubscription(name, topic string, config SubscriberConfig, client client, logger watermill.LoggerAdapter, closing chan struct{}) (*subscription, error) {
+func newSubscription(
+	name, topic string,
+	config SubscriberConfig,
+	client client,
+	logger watermill.LoggerAdapter,
+	closing chan struct{},
+) (*subscription, error) {
 	s := &subscription{
 		name:    name,
 		topic:   topic,
@@ -43,37 +51,59 @@ func newSubscription(name, topic string, config SubscriberConfig, client client,
 }
 
 func (s *subscription) receive(ctx context.Context) {
-	s.readAll(ctx)
-	s.watchChanges(ctx)
+	s.readPendingMessages(ctx)
+
+	g, ctx := errgroup.WithContext(ctx)
+	g.Go(func() error {
+		return s.readPendingMessagesPeriodically(ctx)
+	})
+	g.Go(func() error {
+		return s.watchIncomingMessages(ctx)
+	})
+
+	if err := g.Wait(); err != nil {
+		s.logger.Error("Subscription receive failure", err, nil)
+	}
 }
 
-func (s *subscription) readAll(ctx context.Context) {
-	s.logger.Debug("Reading messages on receive start", nil)
+func (s *subscription) readPendingMessagesPeriodically(ctx context.Context) error {
+	ticker := time.NewTicker(s.config.ReadAllPeriod)
+
+	for {
+		select {
+		case <-ticker.C:
+			s.readPendingMessages(ctx)
+		case <-ctx.Done():
+			return ctx.Err()
+		}
+	}
+}
+
+func (s *subscription) readPendingMessages(ctx context.Context) {
 	docs, err := s.messagesQuery().Documents(ctx).GetAll()
 	if err != nil {
-		s.logger.Error("Couldn't read messages on receive start", err, nil)
+		s.logger.Error("Couldn't read all messages from subscription", err, nil)
+		return
 	}
 	for _, doc := range docs {
 		s.handleAddedMessage(ctx, doc)
 	}
-
-	s.logger.Trace("Reading messages from sub", nil)
 }
 
-func (s *subscription) watchChanges(ctx context.Context) {
+func (s *subscription) watchIncomingMessages(ctx context.Context) error {
 	subscriptionSnapshots := s.messagesQuery().Query.Snapshots(ctx)
 	defer subscriptionSnapshots.Stop()
 	for {
 		subscriptionSnapshot, err := subscriptionSnapshots.Next()
 		if err == iterator.Done {
 			s.logger.Debug("Listening on subscription done", nil)
-			break
+			return err
 		} else if status.Code(err) == codes.Canceled {
 			s.logger.Debug("Receive context canceled", nil)
-			break
+			return err
 		} else if err != nil {
 			s.logger.Error("Error receiving", err, nil)
-			break
+			return err
 		}
 
 		if subscriptionSnapshot.Size == 0 {
@@ -140,7 +170,11 @@ func (s *subscription) handleAddedMessage(ctx context.Context, doc *firestore.Do
 	}
 }
 
-func (s *subscription) ackMessage(ctx context.Context, message *firestore.DocumentSnapshot, logger watermill.LoggerAdapter) error {
+func (s *subscription) ackMessage(
+	ctx context.Context,
+	message *firestore.DocumentSnapshot,
+	logger watermill.LoggerAdapter,
+) error {
 	deleteCtx, deleteCancel := context.WithTimeout(ctx, s.config.Timeout)
 	defer deleteCancel()
 	_, err := message.Ref.Delete(deleteCtx, firestore.Exists)

@@ -1,4 +1,4 @@
-ci: tools lint
+ci: tools lint test
 
 tools:
 	 go install honnef.co/go/tools/cmd/staticcheck@latest
