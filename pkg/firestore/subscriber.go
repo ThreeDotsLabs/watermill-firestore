@@ -17,6 +17,7 @@ import (
 const (
 	defaultPubSubRootCollection = "pubsub"
 	defaultTimeout              = time.Second * 30
+	defaultReadAllPeriod        = time.Second * 30
 
 	subscriptionsCollection = "subscriptions"
 )
@@ -48,6 +49,14 @@ type SubscriberConfig struct {
 
 	// CustomFirestoreClient can be used to override a default client.
 	CustomFirestoreClient client
+
+	// ReadAllPeriod is a period of time between two read-all operations of a subscriber.
+	// Read-all operation means that a subscription collection is read and all messages are consumed.
+	// It's needed as a workaround for Firestore sometimes ignoring collection changes.
+	// Thanks to that we're sure that all messages are consumed with at most ReadAllPeriod delay.
+	//
+	// It defaults to 10 seconds.
+	ReadAllPeriod time.Duration
 }
 
 func (c *SubscriberConfig) setDefaults() {
@@ -62,6 +71,9 @@ func (c *SubscriberConfig) setDefaults() {
 	}
 	if c.Marshaler == nil {
 		c.Marshaler = DefaultMarshaler{}
+	}
+	if c.ReadAllPeriod == 0 {
+		c.ReadAllPeriod = defaultReadAllPeriod
 	}
 }
 
@@ -195,7 +207,12 @@ func (s *Subscriber) SubscribeInitialize(topic string) error {
 	return createFirestoreSubscriptionIfNotExists(s.client, s.config.PubSubRootCollection, topic, s.config.GenerateSubscriptionName(topic), s.logger, s.config.Timeout)
 }
 
-func createFirestoreSubscriptionIfNotExists(client client, rootCollection, topic, subscription string, logger watermill.LoggerAdapter, timeout time.Duration) error {
+func createFirestoreSubscriptionIfNotExists(
+	client client,
+	rootCollection, topic, subscription string,
+	logger watermill.LoggerAdapter,
+	timeout time.Duration,
+) error {
 	logger = logger.With(watermill.LogFields{"topic": topic})
 
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
