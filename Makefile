@@ -9,7 +9,7 @@ lint:
 	staticcheck ./...
 
 up:
-	docker-compose up
+	docker-compose up -d
 
 test:
 	go test -parallel 20 ./...
@@ -28,6 +28,12 @@ test_stress:
 
 bench:
 	go test -bench ./...
+
+wait:
+	go run github.com/ThreeDotsLabs/watermill/dev/wait-for@github-actions localhost:8080
+
+build:
+	go build ./...
 
 fmt:
 	go fmt ./...
