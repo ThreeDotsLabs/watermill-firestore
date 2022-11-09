@@ -28,7 +28,7 @@ bench:
 	go test -bench ./...
 
 wait:
-	go run github.com/ThreeDotsLabs/watermill/dev/wait-for@github-actions localhost:8080
+	go run github.com/ThreeDotsLabs/wait-for@latest localhost:8080
 
 build:
 	go build ./...
