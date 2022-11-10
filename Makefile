@@ -1,5 +1,3 @@
-ci: tools lint test
-
 tools:
 	 go install honnef.co/go/tools/cmd/staticcheck@latest
 	 go install golang.org/x/tools/cmd/goimports@latest
@@ -9,7 +7,7 @@ lint:
 	staticcheck ./...
 
 up:
-	docker-compose up
+	docker-compose up -d
 
 test:
 	go test -parallel 20 ./...
@@ -28,6 +26,12 @@ test_stress:
 
 bench:
 	go test -bench ./...
+
+wait:
+	go run github.com/ThreeDotsLabs/wait-for@latest localhost:8080
+
+build:
+	go build ./...
 
 fmt:
 	go fmt ./...

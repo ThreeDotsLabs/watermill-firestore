@@ -1,4 +1,4 @@
-# Watermill Firestore Pub/Sub [![CI](https://github.com/ThreeDotsLabs/watermill-firestore/workflows/CI/badge.svg)][actions] [![Go Reference](https://pkg.go.dev/badge/github.com/ThreeDotsLabs/watermill-firestore.svg)][goreference]
+# Watermill Firestore Pub/Sub [![CI Status](https://github.com/ThreeDotsLabs/watermill-firestore/actions/workflows/master.yml/badge.svg)](https://github.com/ThreeDotsLabs/watermill-firestore/actions/workflows/master.yml) [![Go Reference](https://pkg.go.dev/badge/github.com/ThreeDotsLabs/watermill-firestore.svg)][goreference]
 <img align="right" width="200" src="https://threedots.tech/watermill-io/watermill-logo.png">
 
 This is a Pub/Sub for the [Watermill][watermill] project which uses the
