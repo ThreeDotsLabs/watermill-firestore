@@ -3,16 +3,13 @@ module github.com/ThreeDotsLabs/watermill-firestore
 go 1.12
 
 require (
-	cloud.google.com/go v0.45.1
+	cloud.google.com/go/firestore v1.10.0
 	github.com/Pallinder/go-randomdata v1.2.0
-	github.com/ThreeDotsLabs/watermill v1.1.1
-	github.com/google/go-cmp v0.3.1 // indirect
-	github.com/google/uuid v1.1.2
-	github.com/pkg/errors v0.8.1
-	github.com/stretchr/testify v1.4.0
-	golang.org/x/net v0.0.0-20190724013045-ca1201d0de80 // indirect
-	golang.org/x/sync v0.0.0-20190423024810-112230192c58
-	golang.org/x/sys v0.0.0-20190804053845-51ab0e2deafa // indirect
-	google.golang.org/api v0.9.0
-	google.golang.org/grpc v1.21.1
+	github.com/ThreeDotsLabs/watermill v1.2.0
+	github.com/google/uuid v1.3.0
+	github.com/pkg/errors v0.9.1
+	github.com/stretchr/testify v1.8.1
+	golang.org/x/sync v0.2.0
+	google.golang.org/api v0.123.0
+	google.golang.org/grpc v1.55.0
 )
