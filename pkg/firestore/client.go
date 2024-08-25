@@ -18,7 +18,7 @@ type client interface {
 	Doc(path string) *firestore.DocumentRef
 	CollectionGroup(collectionID string) *firestore.CollectionGroupRef
 	GetAll(ctx context.Context, docRefs []*firestore.DocumentRef) ([]*firestore.DocumentSnapshot, error)
-	Collections(ctx context.Context) *firestore.CollectionIterator
-	Batch() *firestore.WriteBatch
+	Collections(ctx context.Context) *firestore.CollectionIterator 
+	Batch() *firestore.WriteBatch // nolint
 	Close() error
 }
