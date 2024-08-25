@@ -4,7 +4,7 @@
 version: '3'
 services:
   firestore:
-    image: karhoo/firestore-emulator:0.2.1
+    image: mtlynch/firestore-emulator:latest
     env_file:
       - "./.env"
     ports:
