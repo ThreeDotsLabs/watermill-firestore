@@ -31,7 +31,7 @@ bench:
 	go test -bench ./...
 
 wait:
-	go run github.com/ThreeDotsLabs/wait-for@latest localhost:8080
+	go run github.com/ThreeDotsLabs/wait-for@latest localhost:8200
 
 build:
 	go build ./...
