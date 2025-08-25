@@ -52,7 +52,7 @@ func main() {
 	go publish(publisher)
 
 	<-time.After(time.Second * 20)
-	subscriber.Close()
+	_ = subscriber.Close()
 }
 
 func publish(p *firestore.Publisher) {

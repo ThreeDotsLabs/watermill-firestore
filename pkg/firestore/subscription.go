@@ -91,7 +91,7 @@ func (s *subscription) readPendingMessages(ctx context.Context) {
 }
 
 func (s *subscription) watchIncomingMessages(ctx context.Context) error {
-	subscriptionSnapshots := s.messagesQuery().Query.Snapshots(ctx)
+	subscriptionSnapshots := s.messagesQuery().Snapshots(ctx)
 	defer subscriptionSnapshots.Stop()
 	for {
 		subscriptionSnapshot, err := subscriptionSnapshots.Next()
