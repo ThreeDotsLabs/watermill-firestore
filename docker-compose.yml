@@ -4,9 +4,9 @@
 version: '3'
 services:
   firestore:
-    image: karhoo/firestore-emulator:0.2.1
+    image: mtlynch/firestore-emulator:20210410
     env_file:
       - "./.env"
     ports:
-      - "8080:8787"
+      - "8200:8200"
     restart: unless-stopped

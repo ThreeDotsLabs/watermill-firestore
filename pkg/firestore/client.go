@@ -19,6 +19,7 @@ type client interface {
 	CollectionGroup(collectionID string) *firestore.CollectionGroupRef
 	GetAll(ctx context.Context, docRefs []*firestore.DocumentRef) ([]*firestore.DocumentSnapshot, error)
 	Collections(ctx context.Context) *firestore.CollectionIterator
+	//nolint we need to cover entire interface, even deprecated methods
 	Batch() *firestore.WriteBatch
 	Close() error
 }
