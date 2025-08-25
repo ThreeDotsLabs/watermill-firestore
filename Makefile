@@ -1,13 +1,16 @@
+export FIRESTORE_PROJECT_ID := test
+export FIRESTORE_EMULATOR_HOST := localhost:8200
+
 tools:
 	 go install honnef.co/go/tools/cmd/staticcheck@latest
 	 go install golang.org/x/tools/cmd/goimports@latest
 
-lint: 
+lint:
 	go vet ./...
 	staticcheck ./...
 
 up:
-	docker-compose up -d
+	docker compose up -d
 
 test:
 	go test -parallel 20 ./...
